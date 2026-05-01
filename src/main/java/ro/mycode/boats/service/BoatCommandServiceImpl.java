@@ -59,12 +59,14 @@ public class BoatCommandServiceImpl implements BoatCommandService {
 
     @Override
     @Transactional
-    public void deleteBoat(Long boatId) {
-        if (!boatRepository.existsById(boatId)) {
-            throw new BoatNotFoundException();
-        }
+    public BoatResponse deleteBoat(Long boatId) {
+    Boat boat=boatRepository.findById(boatId)
+                .orElseThrow(() -> new BoatNotFoundException());
 
-        boatRepository.deleteById(boatId);
+    boatRepository.delete(boat);
+    return boatMapper.toDto(boat);
+
+
     }
 
     @Override

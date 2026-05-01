@@ -2,7 +2,9 @@ package ro.mycode.boats.dtos;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
+@Builder
 public record BoatPatchRequest(
         @Size(min = 3, max = 50, message = "Modelul trebuie sa fie intre 3 si 50 de caractere")
         String model,

@@ -21,7 +21,7 @@ public class Boat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long Id;
+    private Long Id;
 
     @NotBlank(message = "Modelul este obligatoriu")
     @Size(min = 3, max = 50)

@@ -28,12 +28,12 @@ public class BoatController {
     public ResponseEntity<BoatResponse> addBoat(@Valid @RequestBody BoatRequest boatRequest) {
         log.debug("http post /api/v2/boats/add");
         BoatResponse b = boatCommandService.addBoat(boatRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(b);
+        return ResponseEntity.status(HttpStatus.CREATED).body(b);
 
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteBoat(@PathVariable Long id) {
-        log.debug("http delete /api/v2/boats/delete");
+        log.debug("http delete /api/v2/boats/delete/{id}",id);
         boatCommandService.deleteBoat(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -56,7 +56,7 @@ public class BoatController {
         return ResponseEntity.status(HttpStatus.OK).body(b);
     }
     @GetMapping("/model/{model}")
-    public ResponseEntity<BoatResponse> getBoatByModel(String model) {
+    public ResponseEntity<BoatResponse> getBoatByModel(@PathVariable String model) {
         log.debug("http get /api/v2/boats/model/{model}", model);
         BoatResponse b=boatQueryService.getBoatByModel(model);
         return ResponseEntity.status(HttpStatus.OK).body(b);
