@@ -1,0 +1,66 @@
+package ro.mycode.users.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
+import ro.mycode.boats.model.Boat;
+
+import java.util.*;
+
+@Entity
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name="users")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @NotBlank(message = "Prenume obligatoriu")
+    @Size(min = 1, max =100)
+    private String firstName;
+
+    @NotBlank(message = "Numele de familie obligatoriu")
+    @Size(min = 1, max = 100)
+    private String lastName;
+
+    @NotBlank(message = "Email obligatoriu")
+    @Size(min = 1, max = 100)
+    private String email;
+
+    @NotNull(message = "Varsta este obligatorie")
+    @Positive(message = "Varsta >18")
+    private int age;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<Boat> boats = new ArrayList<>() {
+    };
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return age == user.age && Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email, age);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "Id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
