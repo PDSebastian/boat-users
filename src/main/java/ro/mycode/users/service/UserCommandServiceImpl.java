@@ -15,7 +15,7 @@ import ro.mycode.users.dtos.UserResponse;
 import ro.mycode.users.mapper.UserMapper;
 
 @Component
-public class UserCommandServiceImpl implements UserCommandService {
+public class    UserCommandServiceImpl implements UserCommandService {
     Userrepository userrepository;
     UserMapper usermapper;
     public UserCommandServiceImpl(Userrepository userrepository,UserMapper usermapper) {
@@ -50,12 +50,16 @@ public class UserCommandServiceImpl implements UserCommandService {
     @Override
     @Transactional
     public UserResponse updateUser( UserRequest userRequest) {
-    if(userrepository.findByEmail(userRequest.getEmail()).isPresent()){
-        throw new UserAlreadyExistsException();
-    }
-        User user=User.builder().firstName(userRequest.getFirstName()).lastName(userRequest.getLastName()).age(userRequest.getAge()).build();
+        User user = userrepository.findByEmail(userRequest.getEmail())
+                .orElseThrow(() -> new UserNotFoundexception());
+
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(userRequest.getLastName());
+        user.setEmail(userRequest.getEmail());
+        user.setAge(userRequest.getAge());
+
         User u= userrepository.save(user);
-        return usermapper.toDto(user);
+        return usermapper.toDto(u);
 
 
     }

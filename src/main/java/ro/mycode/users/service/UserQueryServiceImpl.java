@@ -38,21 +38,21 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
-    public List<UserResponse> getUsersByFirstName(String firstName) {
+    public UserResponse getUsersByFirstName(String firstName) {
         Optional<User> u=userrepository.findByFirstName(firstName);
         if(u.isEmpty()){
             throw new UserNotFoundexception();
         }
-        return u.stream().map(user -> usermapper.toDto(user)).toList();
+       return usermapper.toDto(u.get());
     }
 
     @Override
-    public List<UserResponse> getUserByEmail(String email) {
+    public UserResponse getUserByEmail(String email) {
        Optional<User > u =userrepository.findByEmail(email);
        if(u.isEmpty()){
             throw new UserNotFoundexception();
        }
-       return u.stream().map(user -> usermapper.toDto(user)).toList();
+      return usermapper.toDto(u.get());
     }
 
 

@@ -27,7 +27,7 @@ public class UserController {
     @PostMapping("/add")
     public ResponseEntity<UserResponse> addUser(@Valid @RequestBody UserRequest userRequest) {
         log.debug("http post /api/v2/users/add");
-        return ResponseEntity.status(HttpStatus.OK).body(userCommandService.addUser(userRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userCommandService.addUser(userRequest));
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
@@ -56,13 +56,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userResponse);
     }
     @GetMapping("/firstname/{firstName}")
-    public ResponseEntity<List<UserResponse>> getByFirstName(@PathVariable String firstName) {
-        return ResponseEntity.status(HttpStatus.OK).body(userQueryService.getUsersByFirstName(firstName));
+    public ResponseEntity<UserResponse> getByFirstName(@PathVariable String firstName) {
+        UserResponse userResponse=userQueryService.getUsersByFirstName(firstName);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
     }
 
     @GetMapping("email/{email}")
-    public ResponseEntity<List<UserResponse>> getByEmail(@PathVariable String email) {
-        return ResponseEntity.status(HttpStatus.OK).body(userQueryService.getUserByEmail(email));
+    public ResponseEntity<UserResponse> getByEmail(@PathVariable String email) {
+        UserResponse userResponse=userQueryService.getUserByEmail(email);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
     }
 
 

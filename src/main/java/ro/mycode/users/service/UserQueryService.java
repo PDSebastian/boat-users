@@ -7,7 +7,7 @@ import java.util.List;
 public interface UserQueryService {
     List<UserResponse> getAllUsers();
     UserResponse getUserById(Long id);
-    List<UserResponse> getUsersByFirstName(String firstName);
-    List<UserResponse> getUserByEmail(String email);
+    UserResponse getUsersByFirstName(String firstName);
+    UserResponse getUserByEmail(String email);
 
 }

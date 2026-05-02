@@ -1,10 +1,14 @@
 package ro.mycode.users.dtos;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import ro.mycode.boats.dtos.BoatResponse;
 
 import java.util.List;
 
-
+@Builder
 public record UserResponse(
 
         long id,
