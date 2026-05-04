@@ -2,9 +2,7 @@ package ro.mycode.users.service;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import ro.mycode.system.constants.ErrorConstants;
 import ro.mycode.users.exceptions.InvalidAgeException;
-import ro.mycode.users.exceptions.InvalidEmailException;
 import ro.mycode.users.exceptions.UserAlreadyExistsException;
 import ro.mycode.users.exceptions.UserNotFoundexception;
 import ro.mycode.users.model.User;

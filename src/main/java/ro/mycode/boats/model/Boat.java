@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import ro.mycode.users.model.User;
-
 import java.util.Objects;
 
 @Entity

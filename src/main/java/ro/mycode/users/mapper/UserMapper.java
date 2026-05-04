@@ -6,6 +6,8 @@ import ro.mycode.users.model.User;
 import ro.mycode.users.dtos.UserRequest;
 import ro.mycode.users.dtos.UserResponse;
 
+import java.util.ArrayList;
+
 @Component
 public class UserMapper {
     BoatMapper  boatMapper;
@@ -33,7 +35,8 @@ public class UserMapper {
                 user.getLastName(),
                 user.getEmail(),
                 user.getAge(),
-                user.getBoats().stream().map(boatMapper::toDto).toList()
+                user.getBoats() == null ? new ArrayList<>() :
+                        user.getBoats().stream().map(boatMapper::toDto).toList()
         );
 
     }
