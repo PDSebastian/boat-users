@@ -6,7 +6,7 @@ import ro.mycode.users.exceptions.InvalidAgeException;
 import ro.mycode.users.exceptions.UserAlreadyExistsException;
 import ro.mycode.users.exceptions.UserNotFoundexception;
 import ro.mycode.users.model.User;
-import ro.mycode.users.repository.Userrepository;
+import ro.mycode.users.repository.UserRepository;
 import ro.mycode.users.dtos.UserPatchRequest;
 import ro.mycode.users.dtos.UserRequest;
 import ro.mycode.users.dtos.UserResponse;
@@ -14,9 +14,9 @@ import ro.mycode.users.mapper.UserMapper;
 
 @Component
 public class    UserCommandServiceImpl implements UserCommandService {
-    Userrepository userrepository;
+    UserRepository userrepository;
     UserMapper usermapper;
-    public UserCommandServiceImpl(Userrepository userrepository,UserMapper usermapper) {
+    public UserCommandServiceImpl(UserRepository userrepository, UserMapper usermapper) {
         this.userrepository = userrepository;
         this.usermapper = usermapper;
 
@@ -27,18 +27,18 @@ public class    UserCommandServiceImpl implements UserCommandService {
     @Override
     @Transactional
     public UserResponse addUser(UserRequest userRequest) {
-        if(userRequest.getAge()<18){
+        if(userRequest.age()<18){
             throw new InvalidAgeException();
         }
-        if(userrepository.findByEmail(userRequest.getEmail()).isPresent()){
+        if(userrepository.findByEmail(userRequest.email()).isPresent()){
             throw new UserAlreadyExistsException();
         }
 
         User user = User.builder()
-                .firstName(userRequest.getFirstName())
-                .lastName(userRequest.getLastName())
-                .email(userRequest.getEmail())
-                .age(userRequest.getAge())
+                .firstName(userRequest.firstName())
+                .lastName(userRequest.lastName())
+                .email(userRequest.email())
+                .age(userRequest.age())
                 .build();
 
 
@@ -48,13 +48,13 @@ public class    UserCommandServiceImpl implements UserCommandService {
     @Override
     @Transactional
     public UserResponse updateUser( UserRequest userRequest) {
-        User user = userrepository.findByEmail(userRequest.getEmail())
+        User user = userrepository.findByEmail(userRequest.email())
                 .orElseThrow(() -> new UserNotFoundexception());
 
-        user.setFirstName(userRequest.getFirstName());
-        user.setLastName(userRequest.getLastName());
-        user.setEmail(userRequest.getEmail());
-        user.setAge(userRequest.getAge());
+        user.setFirstName(userRequest.firstName());
+        user.setLastName(userRequest.lastName());
+        user.setEmail(userRequest.email());
+        user.setAge(userRequest.age());
 
         User u= userrepository.save(user);
         return usermapper.toDto(u);

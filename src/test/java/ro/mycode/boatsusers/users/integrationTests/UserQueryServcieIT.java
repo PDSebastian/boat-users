@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import ro.mycode.users.dtos.UserRequest;
 import ro.mycode.users.dtos.UserResponse;
-import ro.mycode.users.repository.Userrepository;
+import ro.mycode.users.repository.UserRepository;
 import ro.mycode.users.service.UserCommandService;
 import ro.mycode.users.service.UserQueryService;
 
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Transactional
 public class UserQueryServcieIT {
     @Autowired
-    private Userrepository userrepository;
+    private UserRepository userrepository;
     @Autowired
     private UserQueryService userQueryService;
     @Autowired

@@ -1,34 +1,30 @@
 package ro.mycode.users.dtos;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class UserRequest {
-    @NotBlank(message = "Prenume obligatoriu")
-    @Size(min = 1, max =100)
-    private String firstName;
 
-    @NotBlank(message = "Numele de familie obligatoriu")
-    @Size(min = 1, max = 100)
-    private String lastName;
+public record UserRequest(
+        @NotBlank(message = "Prenume obligatoriu")
+        @Size(min = 1, max =100)
+        String firstName,
 
-    @NotBlank(message = "Email obligatoriu")
-    @Size(min = 1, max = 100)
-    private String email;
+        @NotBlank(message = "Numele de familie obligatoriu")
+        @Size(min = 1, max = 100)
+         String lastName,
 
-    @NotNull(message = "Varsta este obligatorie")
-    @Positive(message = "Varsta >18")
-    private int age;
+        @NotBlank(message = "Email obligatoriu")
+        @Size(min = 1, max = 100)
+         String email,
+
+        @NotNull(message = "Varsta este obligatorie")
+        @Positive(message = "Varsta >18")
+         int age,
+
+        @NotBlank(message = "Parola este obligatorie")
+        String password
+
+) {
+
 
 
 

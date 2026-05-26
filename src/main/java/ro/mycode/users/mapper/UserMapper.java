@@ -19,13 +19,13 @@ public class UserMapper {
             return null;
         }
         return User.builder().
-                firstName(userRequest.getFirstName()).
-                lastName(userRequest.getLastName()).
-                email(userRequest.getEmail())
-                .age(userRequest.getAge())
+                firstName(userRequest.firstName()).
+                lastName(userRequest.lastName()).
+                email(userRequest.email())
+                .age(userRequest.age())
                 .build();
     }
-    public UserResponse toDto(User user) {
+    public UserResponse toDto(User user,String token) {
         if(user == null){
             return null;
         }
@@ -35,11 +35,30 @@ public class UserMapper {
                 user.getLastName(),
                 user.getEmail(),
                 user.getAge(),
+                token,
                 user.getBoats() == null ? new ArrayList<>() :
                         user.getBoats().stream().map(boatMapper::toDto).toList()
         );
 
+
     }
+    public UserResponse toDtoAuth(User user, String token) {
+        if (user == null) {
+            return null;
+        }
+        return new UserResponse(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getAge(),
+                token,
+                user.getBoats() == null ? new ArrayList<>() :
+                        user.getBoats().stream().map(boatMapper::toDto).toList()
+        );
+    }
+
+
 
 
 

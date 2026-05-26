@@ -12,14 +12,14 @@ import ro.mycode.boats.dtos.BoatResponse;
 import ro.mycode.boats.mapper.BoatMapper;
 import ro.mycode.users.exceptions.UserNotFoundexception;
 import ro.mycode.users.model.User;
-import ro.mycode.users.repository.Userrepository;
+import ro.mycode.users.repository.UserRepository;
 
 @Component
 public class BoatCommandServiceImpl implements BoatCommandService {
     BoatRepository boatRepository;
     BoatMapper boatMapper;
-    Userrepository userrepository;
-    public BoatCommandServiceImpl(BoatRepository boatRepository,BoatMapper boatMapper,Userrepository userrepository) {
+    UserRepository userrepository;
+    public BoatCommandServiceImpl(BoatRepository boatRepository, BoatMapper boatMapper, UserRepository userrepository) {
         this.boatRepository = boatRepository;
         this.boatMapper = boatMapper;
         this.userrepository = userrepository;

@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import ro.mycode.users.dtos.UserPatchRequest;
 import ro.mycode.users.dtos.UserRequest;
 import ro.mycode.users.dtos.UserResponse;
-import ro.mycode.users.repository.Userrepository;
+import ro.mycode.users.repository.UserRepository;
 import ro.mycode.users.service.UserCommandServiceImpl;
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("tests")
 public class UserCommandServiceIT {
     @Autowired
-    Userrepository userrepository;
+    UserRepository userrepository;
     @Autowired
     UserCommandServiceImpl userCommandService;
 

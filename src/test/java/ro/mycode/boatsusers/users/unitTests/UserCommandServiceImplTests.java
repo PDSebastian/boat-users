@@ -13,7 +13,7 @@ import ro.mycode.users.exceptions.UserAlreadyExistsException;
 import ro.mycode.users.exceptions.UserNotFoundexception;
 import ro.mycode.users.mapper.UserMapper;
 import ro.mycode.users.model.User;
-import ro.mycode.users.repository.Userrepository;
+import ro.mycode.users.repository.UserRepository;
 import ro.mycode.users.service.UserCommandServiceImpl;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class UserCommandServiceImplTests {
     @Mock
-    private Userrepository  userrepository;
+    private UserRepository userrepository;
 
     @Mock
     UserMapper usermapper;

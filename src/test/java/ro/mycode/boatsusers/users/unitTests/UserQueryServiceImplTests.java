@@ -9,7 +9,7 @@ import ro.mycode.users.dtos.UserResponse;
 import ro.mycode.users.exceptions.UserNotFoundexception;
 import ro.mycode.users.mapper.UserMapper;
 import ro.mycode.users.model.User;
-import ro.mycode.users.repository.Userrepository;
+import ro.mycode.users.repository.UserRepository;
 import ro.mycode.users.service.UserQueryServiceImpl;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class UserQueryServiceImplTests {
     @Mock
-    Userrepository  userrepository;
+    UserRepository userrepository;
     @Mock
     UserMapper usermapper;
     @InjectMocks

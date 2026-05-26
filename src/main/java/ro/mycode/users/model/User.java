@@ -3,7 +3,10 @@ package ro.mycode.users.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import ro.mycode.boats.model.Boat;
+import ro.mycode.system.security.UserPermissions;
 
 import java.util.*;
 
@@ -14,7 +17,9 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="users")
-public class User {
+public class User implements UserDetails {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -34,6 +39,8 @@ public class User {
     @NotNull(message = "Varsta este obligatorie")
     @Positive(message = "Varsta >18")
     private int age;
+    private String password;
+    private Set<UserPermissions> permissions = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,
             orphanRemoval = true,
@@ -62,5 +69,19 @@ public class User {
                 ", email='" + email + '\'' +
                 ", age=" + age +
                 '}';
+    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return "";
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 }

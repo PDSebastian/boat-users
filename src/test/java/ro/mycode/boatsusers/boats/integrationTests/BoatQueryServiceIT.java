@@ -13,7 +13,7 @@ import ro.mycode.boats.service.BoatCommandService;
 import ro.mycode.boats.service.BoatQueryService;
 import ro.mycode.users.dtos.UserRequest;
 import ro.mycode.users.dtos.UserResponse;
-import ro.mycode.users.repository.Userrepository;
+import ro.mycode.users.repository.UserRepository;
 import ro.mycode.users.service.UserCommandService;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class BoatQueryServiceIT {
     @Autowired
     private BoatQueryService boatQueryService;
     @Autowired
-    private Userrepository  userrepository;
+    private UserRepository userrepository;
     @Autowired
     private UserCommandService  userCommandService;
 

@@ -13,7 +13,7 @@ import ro.mycode.boats.repository.BoatRepository;
 import ro.mycode.boats.service.BoatCommandService;
 import ro.mycode.users.dtos.UserRequest;
 import ro.mycode.users.dtos.UserResponse;
-import ro.mycode.users.repository.Userrepository;
+import ro.mycode.users.repository.UserRepository;
 import ro.mycode.users.service.UserCommandService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,7 +28,7 @@ public class BoatCommandServiceIT {
     @Autowired
     BoatCommandService boatCommandService;
     @Autowired
-    Userrepository  userrepository;
+    UserRepository userrepository;
     @Autowired
     UserCommandService userCommandService;
 

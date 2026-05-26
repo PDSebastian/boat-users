@@ -3,7 +3,7 @@ package ro.mycode.users.service;
 import org.springframework.stereotype.Component;
 import ro.mycode.users.exceptions.UserNotFoundexception;
 import ro.mycode.users.model.User;
-import ro.mycode.users.repository.Userrepository;
+import ro.mycode.users.repository.UserRepository;
 import ro.mycode.users.dtos.UserResponse;
 import ro.mycode.users.mapper.UserMapper;
 
@@ -12,9 +12,9 @@ import java.util.Optional;
 
 @Component
 public class UserQueryServiceImpl implements UserQueryService {
-   Userrepository userrepository;
+   UserRepository userrepository;
    UserMapper usermapper;
-   public UserQueryServiceImpl(Userrepository userrepository,UserMapper usermapper){
+   public UserQueryServiceImpl(UserRepository userrepository, UserMapper usermapper){
        this.userrepository=userrepository;
        this.usermapper=usermapper;
 

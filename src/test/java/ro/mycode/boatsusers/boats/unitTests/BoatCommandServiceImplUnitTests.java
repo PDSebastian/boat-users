@@ -16,7 +16,7 @@ import ro.mycode.boats.model.Boat;
 import ro.mycode.boats.repository.BoatRepository;
 import ro.mycode.boats.service.BoatCommandServiceImpl;
 import ro.mycode.users.model.User;
-import ro.mycode.users.repository.Userrepository;
+import ro.mycode.users.repository.UserRepository;
 
 import java.util.Optional;
 
@@ -32,7 +32,7 @@ public class BoatCommandServiceImplUnitTests {
     BoatRepository boatRepository;
 
     @Mock
-    Userrepository userrepository;
+    UserRepository userrepository;
 
     @Mock
     BoatMapper boatMapper;

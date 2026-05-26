@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ro.mycode.boats.exceptions.BoatAlreadyExistsException;
 import ro.mycode.boats.exceptions.BoatNotFoundException;
-import ro.mycode.system.constants.HintConstants;
 import ro.mycode.users.exceptions.UserAlreadyExistsException;
 import ro.mycode.users.exceptions.UserNotFoundexception;
 
@@ -18,13 +17,13 @@ public class GlobalExceptionHandler {
             UserNotFoundexception.class,
 
     })
-    public ResponseEntity<ApiResponse> Exception(RuntimeException ex){
-        ApiResponse apiResponse=ApiResponse.builder()
+    public ResponseEntity<ApiErrorResponse> Exception(RuntimeException ex){
+        ApiErrorResponse apiErrorResponse = ApiErrorResponse.builder()
                 .message(ex.getMessage())
                 .status(HttpStatus.CONFLICT.value())
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiErrorResponse);
 
 
 
@@ -33,12 +32,12 @@ public class GlobalExceptionHandler {
             BoatAlreadyExistsException.class,
             UserAlreadyExistsException.class
     })
-    public ResponseEntity<ApiResponse> Exception(Exception ex){
-        ApiResponse apiResponse=ApiResponse.builder()
+    public ResponseEntity<ApiErrorResponse> Exception(Exception ex){
+        ApiErrorResponse apiErrorResponse = ApiErrorResponse.builder()
                 .message(ex.getMessage())
                 .status(HttpStatus.CONFLICT.value())
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiResponse);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiErrorResponse);
     }
 }
