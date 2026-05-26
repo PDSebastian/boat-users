@@ -1,12 +1,13 @@
 package ro.mycode.users.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import ro.mycode.users.exceptions.UserNotFoundexception;
 import ro.mycode.users.repository.UserRepository;
 
 @Component
-public class UserDetailsServiceImpl implements UserDetailService{
+public class UserDetailsServiceImpl implements UserDetailsService{
     UserRepository userrepository;
     public UserDetailsServiceImpl(UserRepository userrepository) {
         this.userrepository = userrepository;

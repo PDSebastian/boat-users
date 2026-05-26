@@ -23,9 +23,10 @@ public class UserMapper {
                 lastName(userRequest.lastName()).
                 email(userRequest.email())
                 .age(userRequest.age())
+                .password(userRequest.password())
                 .build();
     }
-    public UserResponse toDto(User user,String token) {
+    public UserResponse toDto(User user) {
         if(user == null){
             return null;
         }
@@ -35,7 +36,7 @@ public class UserMapper {
                 user.getLastName(),
                 user.getEmail(),
                 user.getAge(),
-                token,
+                null,
                 user.getBoats() == null ? new ArrayList<>() :
                         user.getBoats().stream().map(boatMapper::toDto).toList()
         );

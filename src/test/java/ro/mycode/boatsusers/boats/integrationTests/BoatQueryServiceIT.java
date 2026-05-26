@@ -60,7 +60,9 @@ public class BoatQueryServiceIT {
                 .firstName(firstName)
                 .lastName(lastName)
                 .email(email)
+
                 .age(age)
+
                 .build();
 
         UserResponse userResponse = userCommandService.addUser(userRequest);
@@ -101,6 +103,7 @@ public class BoatQueryServiceIT {
                 .lastName(lastName)
                 .email(email)
                 .age(age)
+
                 .build();
 
         UserResponse userResponse = userCommandService.addUser(userRequest);

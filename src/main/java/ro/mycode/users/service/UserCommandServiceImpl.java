@@ -39,6 +39,7 @@ public class    UserCommandServiceImpl implements UserCommandService {
                 .lastName(userRequest.lastName())
                 .email(userRequest.email())
                 .age(userRequest.age())
+                .password(userRequest.password())
                 .build();
 
 
@@ -47,19 +48,17 @@ public class    UserCommandServiceImpl implements UserCommandService {
 
     @Override
     @Transactional
-    public UserResponse updateUser( UserRequest userRequest) {
+    public UserResponse updateUser(UserRequest userRequest) {
         User user = userrepository.findByEmail(userRequest.email())
-                .orElseThrow(() -> new UserNotFoundexception());
+                .orElseThrow(()->new  UserNotFoundexception());
 
         user.setFirstName(userRequest.firstName());
         user.setLastName(userRequest.lastName());
         user.setEmail(userRequest.email());
         user.setAge(userRequest.age());
 
-        User u= userrepository.save(user);
-        return usermapper.toDto(u);
-
-
+        User updatedUser = userrepository.save(user);
+        return usermapper.toDto(updatedUser);
     }
 
     @Override

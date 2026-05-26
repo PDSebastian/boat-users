@@ -69,5 +69,5 @@ public class AuthServiceImpl implements AuthService{
         String token = jwtTokenProvider.generateToken(saved);
         return userMapper.toDtoAuth(saved, token);
     }
-    
+
 }
