@@ -59,7 +59,9 @@ public class SecurityConfiguration {
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+
+
+        JwtAuthenticationConverter customConverter = jwtAuthenticationConverter();
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> {})
@@ -73,7 +75,7 @@ public class SecurityConfiguration {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((AuthenticationEntryPoint) jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(securityAccessDeniedHandler))
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customConverter)));
 
         return http.build();
     }

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ro.mycode.boats.service.BoatCommandService;
 import ro.mycode.boats.dtos.BoatPatchRequest;
@@ -25,6 +26,7 @@ public class BoatController {
         this.boatQueryService = boatQueryService;
     }
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('boat:add')")
     public ResponseEntity<BoatResponse> addBoat(@Valid @RequestBody BoatRequest boatRequest) {
         log.debug("http post /api/v2/boats/add");
         BoatResponse b = boatCommandService.addBoat(boatRequest);
@@ -32,6 +34,7 @@ public class BoatController {
 
     }
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('boat:delete')")
     public ResponseEntity<Void> deleteBoat(@PathVariable Long id) {
         log.debug("http delete /api/v2/boats/delete/{id}",id);
         boatCommandService.deleteBoat(id);
@@ -44,6 +47,7 @@ public class BoatController {
         return ResponseEntity.status(HttpStatus.OK).body(b);
     }
     @PatchMapping("/patch/{id}")
+    @PreAuthorize("hasAuthority('boat:edit')")
     public ResponseEntity<BoatResponse> patchBoat(@PathVariable Long id, @Valid @RequestBody BoatPatchRequest boatPatchRequest) {
         log.debug("http patch /api/v2/boats/patch/{id}", id);
         BoatResponse b=boatCommandService.updatePatchBoat(id, boatPatchRequest);

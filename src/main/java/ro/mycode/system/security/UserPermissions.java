@@ -5,12 +5,16 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum UserPermissions {
 
-    USER_ADD("User_Add"),
-    USER_EDIT("User_Edit"),
-    USER_DELETE("User_Delete");
+
+
+    BOAT_ADD("boat:add"),
+    BOAT_EDIT("boat:edit"),
+    BOAT_DELETE("boat:delete");
+
+
+
 
     private String permission;
-
     public String getPermission() {
         return permission;
     }

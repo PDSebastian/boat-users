@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService{
 
         User user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(request.password()));
-        user.setPermissions(Set.of(UserPermissions.USER_ADD, UserPermissions.USER_DELETE));
+        user.setPermissions(Set.of(UserPermissions.BOAT_ADD, UserPermissions.BOAT_EDIT, UserPermissions.BOAT_DELETE));
         User saved = userRepository.save(user);
 
         String token = jwtTokenProvider.generateToken(saved);
