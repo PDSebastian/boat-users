@@ -1,123 +1,104 @@
 package ro.mycode.boatsusers.users.integrationTests;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import ro.mycode.users.dtos.UserRequest;
 import ro.mycode.users.dtos.UserResponse;
+import ro.mycode.users.model.User;
 import ro.mycode.users.repository.UserRepository;
-import ro.mycode.users.service.UserCommandService;
 import ro.mycode.users.service.UserQueryService;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("tests")
 @Transactional
 public class UserQueryServcieIT {
+
     @Autowired
     private UserRepository userrepository;
+
     @Autowired
     private UserQueryService userQueryService;
-    @Autowired
-    private UserCommandService userCommandService;
 
     @BeforeEach
     public void setup() {
         userrepository.deleteAll();
     }
+
     @Test
-    public void testGetAllUsersReturns200(){
-        String firstName = "John";
-        String lastName = "Doe";
-        String email1="JD@gmail.com";
-        String email2="aa@gmail.com";
-        Integer age=19;
+    void testGetAllUsersReturns200() {
+        userrepository.save(User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("JD@gmail.com")
+                .age(19)
+                .build());
 
-        UserRequest userRequest1=UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email1)
-                .age(age)
-                .build();
+        userrepository.save(User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("aa@gmail.com")
+                .age(19)
+                .build());
 
-        UserRequest userRequest2=UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email2)
-                .age(age)
-                .build();
+        List<UserResponse> users = userQueryService.getAllUsers();
 
-        userCommandService.addUser(userRequest1);
-        userCommandService.addUser(userRequest2);
-        List<UserResponse> users=userQueryService.getAllUsers();
-        assertEquals(2,users.size());
-
-
-
-    }
-    @Test
-    public void testGetUserByIdReturns200(){
-        String firstName = "John";
-        String lastName = "Doe";
-        String email1="JD@gmail.com";
-        Integer age=19;
-
-        UserRequest userRequest1=UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email1)
-                .age(age)
-                .build();
-
-        UserResponse userResponse=userCommandService.addUser(userRequest1);
-        UserResponse u=userQueryService.getUserById(userResponse.id());
-        assertEquals(userResponse,u);
-
-    }
-    @Test
-    public void testGetUserByEmailReturns200(){
-        String firstName = "John";
-        String lastName = "Doe";
-        String email1="JD@gmail.com";
-        Integer age=19;
-
-        UserRequest userRequest1=UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email1)
-                .age(age)
-                .build();
-
-        UserResponse userResponse=userCommandService.addUser(userRequest1);
-        UserResponse u=userQueryService.getUserByEmail(userResponse.email());
-        assertEquals(userResponse,u);
-    }
-    @Test
-    public void testGetUSerByFirstNameReturns200(){
-        String firstName = "John";
-        String lastName = "Doe";
-        String email1="JD@gmail.com";
-        Integer age=19;
-
-        UserRequest userRequest1=UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email1)
-                .age(age)
-                .build();
-
-        UserResponse userResponse=userCommandService.addUser(userRequest1);
-        UserResponse u=userQueryService.getUsersByFirstName(userResponse.firstName());
-        assertEquals(userResponse,u);
-
+        assertNotNull(users);
+        assertEquals(2, users.size());
     }
 
+    @Test
+    void testGetUserByIdReturns200() {
+        User saved = userrepository.save(User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("JD@gmail.com")
+                .age(19)
+                .build());
 
+        UserResponse found = userQueryService.getUserById(saved.getId());
 
+        assertNotNull(found);
+        assertEquals(saved.getId(), found.id());
+        assertEquals("John", found.firstName());
+        assertEquals("JD@gmail.com", found.email());
+    }
 
+    @Test
+    void testGetUserByEmailReturns200() {
+        User saved = userrepository.save(User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("JD@gmail.com")
+                .age(19)
+                .build());
+
+        UserResponse found = userQueryService.getUserByEmail("JD@gmail.com");
+
+        assertNotNull(found);
+        assertEquals(saved.getId(), found.id());
+        assertEquals("JD@gmail.com", found.email());
+    }
+
+    @Test
+    void testGetUSerByFirstNameReturns200() {
+        User saved = userrepository.save(User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("JD@gmail.com")
+                .age(19)
+                .build());
+
+        UserResponse found = userQueryService.getUsersByFirstName("John");
+
+        assertNotNull(found);
+        assertEquals(saved.getId(), found.id());
+        assertEquals("John", found.firstName());
+    }
 }

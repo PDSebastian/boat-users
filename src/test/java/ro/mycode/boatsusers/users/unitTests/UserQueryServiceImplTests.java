@@ -19,164 +19,82 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-
 @ExtendWith(MockitoExtension.class)
 public class UserQueryServiceImplTests {
+
     @Mock
-    UserRepository userrepository;
+    private UserRepository userrepository;
+
     @Mock
-    UserMapper usermapper;
+    private UserMapper usermapper;
+
     @InjectMocks
-    UserQueryServiceImpl userQueryService;
+    private UserQueryServiceImpl userQueryService;
 
     @Test
-    public void getAllUsersTest(){
-        String firstName = "John";
-        String lastName = "Doe";
-        String email="JD@gmail.com";
-        Integer age=19;
+    void getAllUsersTest() {
+        User user1 = User.builder().firstName("John").lastName("Doe").email("JD@gmail.com").age(19).build();
+        User user2 = User.builder().firstName("PD").lastName("S").email("PDS@gmail.com").age(22).build();
 
-        UserResponse user =UserResponse.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
+        UserResponse res1 = UserResponse.builder().firstName("John").lastName("Doe").email("JD@gmail.com").age(19).build();
+        UserResponse res2 = UserResponse.builder().firstName("PD").lastName("S").email("PDS@gmail.com").age(22).build();
 
-        UserResponse user1=UserResponse.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
-
-        List<UserResponse> userList = List.of(user,user1);
-
-        User user2=User.builder().firstName(firstName).lastName(lastName).email(email).age(age).build();
-        User user3=User.builder().firstName(firstName).lastName(lastName).email(email).age(age).build();
-
-        List<User> users = List.of(user2,user3);
-
-        when(userrepository.findAll()).thenReturn(users);
-        when(usermapper.toDto(user2)).thenReturn(user);
-        when(usermapper.toDto(user3)).thenReturn(user1);
+        when(userrepository.findAll()).thenReturn(List.of(user1, user2));
+        when(usermapper.toDto(user1)).thenReturn(res1);
+        when(usermapper.toDto(user2)).thenReturn(res2);
 
         List<UserResponse> res = userQueryService.getAllUsers();
-        assertEquals(users.size(),res.size());
-        assertEquals(user.firstName(),res.get(1).firstName());
 
-
-
+        assertEquals(2, res.size());
+        assertEquals("John", res.get(0).firstName());
+        assertEquals("PD", res.get(1).firstName());
     }
+
     @Test
-    public void testGetUserByIdReturnsOk(){
-        Long userId = 1L;
-        String firstName = "John";
-        String lastName = "Doe";
-        String email="JD@gmail.com";
-        Integer age=19;
+    void testGetUserByIdReturnsOk() {
+        User user = User.builder().id(1L).firstName("John").lastName("Doe").email("JD@gmail.com").age(19).build();
+        UserResponse expectedResponse = UserResponse.builder().id(1L).firstName("John").lastName("Doe").email("JD@gmail.com").age(19).build();
 
-        User user=User.builder()
-                .id(userId)
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
+        when(userrepository.findById(1L)).thenReturn(Optional.of(user));
+        when(usermapper.toDto(user)).thenReturn(expectedResponse);
 
-        UserResponse expectedRespnose=UserResponse.builder()
-                .id(userId)
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
-
-        when(userrepository.findById(userId)).thenReturn(Optional.of(user));
-        when(usermapper.toDto(user)).thenReturn(expectedRespnose);
-        UserResponse res = userQueryService.getUserById(userId);
-        assertEquals(expectedRespnose,res);
-
-
-
+        UserResponse res = userQueryService.getUserById(1L);
+        assertEquals(expectedResponse, res);
     }
+
     @Test
-    public void testGetUserByFirstNameReturnsOk(){
-        Long userId = 1L;
-        String firstName = "John";
-        String lastName = "Doe";
-        String email="JD@gmail.com";
-        Integer age=19;
+    void testGetUserByFirstNameReturnsOk() {
+        User user = User.builder().id(1L).firstName("John").lastName("Doe").email("JD@gmail.com").age(19).build();
+        UserResponse expectedResponse = UserResponse.builder().id(1L).firstName("John").lastName("Doe").email("JD@gmail.com").age(19).build();
 
-        User user=User.builder()
-                .id(userId)
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
+        when(userrepository.findByFirstName("John")).thenReturn(Optional.of(user));
+        when(usermapper.toDto(user)).thenReturn(expectedResponse);
 
-        UserResponse expectedRespnose=UserResponse.builder()
-                .id(userId)
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
-
-        when(userrepository.findByFirstName(firstName)).thenReturn(Optional.of(user));
-        when(usermapper.toDto(user)).thenReturn(expectedRespnose);
-        UserResponse res = userQueryService.getUsersByFirstName(firstName);
-        assertEquals(expectedRespnose,res);
-
-
-
-
-
+        UserResponse res = userQueryService.getUsersByFirstName("John");
+        assertEquals(expectedResponse, res);
     }
+
     @Test
-    public void testGetUserByEmailReturnsOk(){
-        Long userId = 1L;
-        String firstName = "John";
-        String lastName = "Doe";
-        String email="JD@gmail.com";
-        Integer age=19;
+    void testGetUserByEmailReturnsOk() {
+        User user = User.builder().id(1L).firstName("John").lastName("Doe").email("JD@gmail.com").age(19).build();
+        UserResponse expectedResponse = UserResponse.builder().id(1L).firstName("John").lastName("Doe").email("JD@gmail.com").age(19).build();
 
-        User user=User.builder()
-                .id(userId)
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
+        when(userrepository.findByEmail("JD@gmail.com")).thenReturn(Optional.of(user));
+        when(usermapper.toDto(user)).thenReturn(expectedResponse);
 
-        UserResponse expectedRespnose=UserResponse.builder()
-                .id(userId)
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
-
-        when(userrepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(usermapper.toDto(user)).thenReturn(expectedRespnose);
-        UserResponse res = userQueryService.getUserByEmail(email);
-        assertEquals(expectedRespnose,res);
-
+        UserResponse res = userQueryService.getUserByEmail("JD@gmail.com");
+        assertEquals(expectedResponse, res);
     }
+
     @Test
-    public void testGetUserByEmailThrowsUserNotFoundException(){
-        String email="JD@gmail.com";
-
-        when(userrepository.findByEmail(email)).thenReturn(Optional.empty());
-        assertThrows(UserNotFoundexception.class,()->userQueryService.getUserByEmail(email));
-
+    void testGetUserByEmailThrowsUserNotFoundException() {
+        when(userrepository.findByEmail("JD@gmail.com")).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundexception.class, () -> userQueryService.getUserByEmail("JD@gmail.com"));
     }
+
     @Test
-    public void testGetUserByFirstNameThrowsUserNotFoundException(){
-        String firstName = "John";
-        when(userrepository.findByFirstName(firstName)).thenReturn(Optional.empty());
-        assertThrows(UserNotFoundexception.class,()->userQueryService.getUsersByFirstName(firstName));
+    void testGetUserByFirstNameThrowsUserNotFoundException() {
+        when(userrepository.findByFirstName("John")).thenReturn(Optional.empty());
+        assertThrows(UserNotFoundexception.class, () -> userQueryService.getUsersByFirstName("John"));
     }
-
 }

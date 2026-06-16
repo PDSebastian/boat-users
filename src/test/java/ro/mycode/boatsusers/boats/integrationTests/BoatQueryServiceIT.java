@@ -6,151 +6,109 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import ro.mycode.boats.dtos.BoatRequest;
 import ro.mycode.boats.dtos.BoatResponse;
+import ro.mycode.boats.model.Boat;
 import ro.mycode.boats.repository.BoatRepository;
-import ro.mycode.boats.service.BoatCommandService;
 import ro.mycode.boats.service.BoatQueryService;
-import ro.mycode.users.dtos.UserRequest;
-import ro.mycode.users.dtos.UserResponse;
+import ro.mycode.users.model.User;
 import ro.mycode.users.repository.UserRepository;
-import ro.mycode.users.service.UserCommandService;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("tests")
 @Transactional
 public class BoatQueryServiceIT {
+
     @Autowired
     private BoatRepository boatRepository;
 
     @Autowired
-    private BoatCommandService boatCommandService;
+    private BoatQueryService boatQueryService;
 
     @Autowired
-    private BoatQueryService boatQueryService;
-    @Autowired
     private UserRepository userrepository;
-    @Autowired
-    private UserCommandService  userCommandService;
 
     @BeforeEach
     public void setup() {
         boatRepository.deleteAll();
     }
+
     @Test
-    public void testGetAllBoats() {
-        String firstName = "John";
-        String lastName = "Doe";
-        String email="JD@gmail.com";
-        Integer age=19;
+    void testGetAllBoats() {
+        User user = userrepository.save(User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("JD@gmail.com")
+                .age(19)
+                .build());
 
-        String boatModel="Yamaha";
-        String boatColor="Blue";
-        Integer size=10;
+        boatRepository.save(Boat.builder()
+                .model("Yamaha")
+                .color("Blue")
+                .size(10)
+                .user(user)
+                .build());
 
-        String model="Honda";
-        String color="Red";
-        Integer boatSize=100;
+        boatRepository.save(Boat.builder()
+                .model("Honda")
+                .color("Red")
+                .size(100)
+                .user(user)
+                .build());
 
-        UserRequest userRequest = UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
+        List<BoatResponse> boats = boatQueryService.getAllBoats();
 
-                .age(age)
-
-                .build();
-
-        UserResponse userResponse = userCommandService.addUser(userRequest);
-
-        BoatRequest b1 = BoatRequest.builder()
-                .model(boatModel)
-                .color(boatColor)
-                .size(size)
-                .userId(userResponse.id())
-                .build();
-
-        BoatRequest b2 = BoatRequest.builder()
-                .model(model)
-                .color(color)
-                .size(boatSize)
-                .userId(userResponse.id())
-                .build();
-
-        boatCommandService.addBoat(b1);
-        boatCommandService.addBoat(b2);
-
-        List<BoatResponse> boatResponse = boatQueryService.getAllBoats();
-        assertEquals(2, boatResponse.size());
-    }
-    @Test
-    public void testGetBoatById() {
-        String firstName = "John";
-        String lastName = "Doe";
-        String email="JD@gmail.com";
-        Integer age=19;
-
-        String boatModel="Yamaha";
-        String boatColor="Blue";
-        Integer size=10;
-
-        UserRequest userRequest = UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-
-                .build();
-
-        UserResponse userResponse = userCommandService.addUser(userRequest);
-
-        BoatRequest b1 = BoatRequest.builder()
-                .model(boatModel)
-                .color(boatColor)
-                .size(size)
-                .userId(userResponse.id())
-                .build();
-
-        BoatResponse boatResponse=boatCommandService.addBoat(b1);
-
-        BoatResponse b=boatQueryService.getBoatById(boatResponse.getId());
-        assertEquals(boatResponse,b);
-
-    }
-    @Test
-    public void testGetBoatByModel() {
-        String firstName = "John";
-        String lastName = "Doe";
-        String email="JD@gmail.com";
-        Integer age=19;
-
-        String boatModel="Yamaha";
-        String boatColor="Blue";
-        Integer size=10;
-
-        UserRequest userRequest = UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
-
-        UserResponse userResponse = userCommandService.addUser(userRequest);
-        BoatRequest b1 = BoatRequest.builder()
-                .model(boatModel)
-                .color(boatColor)
-                .size(size)
-                .userId(userResponse.id())
-                .build();
-        BoatResponse boatResponse=boatCommandService.addBoat(b1);
-        BoatResponse b=boatQueryService.getBoatByModel(b1.getModel());
-        assertEquals(boatResponse,b);
-
+        assertNotNull(boats);
+        assertEquals(2, boats.size());
     }
 
+    @Test
+    void testGetBoatById() {
+        User user = userrepository.save(User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("JD@gmail.com")
+                .age(19)
+                .build());
 
+        Boat savedBoat = boatRepository.save(Boat.builder()
+                .model("Yamaha")
+                .color("Blue")
+                .size(10)
+                .user(user)
+                .build());
+
+        BoatResponse found = boatQueryService.getBoatById(savedBoat.getId());
+
+        assertNotNull(found);
+        assertEquals(savedBoat.getId(), found.getId());
+        assertEquals("Yamaha", found.getModel());
+        assertEquals("Blue", found.getColor());
+    }
+
+    @Test
+    void testGetBoatByModel() {
+        User user = userrepository.save(User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("JD@gmail.com")
+                .age(19)
+                .build());
+
+        Boat savedBoat = boatRepository.save(Boat.builder()
+                .model("Yamaha")
+                .color("Blue")
+                .size(10)
+                .user(user)
+                .build());
+
+        BoatResponse found = boatQueryService.getBoatByModel("Yamaha");
+
+        assertNotNull(found);
+        assertEquals(savedBoat.getId(), found.getId());
+        assertEquals("Yamaha", found.getModel());
+    }
 }

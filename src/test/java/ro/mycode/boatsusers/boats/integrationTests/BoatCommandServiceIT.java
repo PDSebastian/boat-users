@@ -4,185 +4,160 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import ro.mycode.boats.dtos.BoatPatchRequest;
 import ro.mycode.boats.dtos.BoatRequest;
 import ro.mycode.boats.dtos.BoatResponse;
+import ro.mycode.boats.model.Boat;
 import ro.mycode.boats.repository.BoatRepository;
 import ro.mycode.boats.service.BoatCommandService;
-import ro.mycode.users.dtos.UserRequest;
-import ro.mycode.users.dtos.UserResponse;
+import ro.mycode.users.model.PermissionTemplates;
+import ro.mycode.users.model.User;
 import ro.mycode.users.repository.UserRepository;
-import ro.mycode.users.service.UserCommandService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("tests")
 @Transactional
 public class BoatCommandServiceIT {
+
     @Autowired
-    BoatRepository  boatRepository;
+    private BoatRepository boatRepository;
+
     @Autowired
-    BoatCommandService boatCommandService;
+    private BoatCommandService boatCommandService;
+
     @Autowired
-    UserRepository userrepository;
+    private UserRepository userrepository;
+
     @Autowired
-    UserCommandService userCommandService;
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         boatRepository.deleteAll();
     }
+
     @Test
-    public void testAddBoat(){
-        String model="adwd";
-        String color="bdwdw";
-        Integer size=10;
+    void testAddBoat() {
+        User user = userrepository.save(User.builder()
+                .firstName("Pop")
+                .lastName("Sebastian")
+                .email("PDSeb@gmail.com")
+                .age(19)
+                .password(passwordEncoder.encode("password"))
+                .permissions(PermissionTemplates.permissions)
+                .build());
 
-        String firstName="aadad";
-        String lastName="bfrr";
-        String email="vvva";
-        Integer age=19;
-
-        UserRequest userRequest = UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
+        BoatRequest req = BoatRequest.builder()
+                .model("model")
+                .color("Red")
+                .size(10)
+                .userId(user.getId())
                 .build();
 
-        UserResponse userResponse=userCommandService.addUser(userRequest);
+        BoatResponse created = boatCommandService.addBoat(req);
 
-        BoatRequest boatRequest=BoatRequest.builder()
-                .model(model)
-                .color(color)
-                .size(size)
-                .userId(userResponse.id())
-                .build();
-
-
-        BoatResponse boatResponse = boatCommandService.addBoat(boatRequest);
-        assertEquals(model,boatResponse.getModel());
-
-    }
-    @Test
-    public void testDeleteBoat(){
-        String model="adwd";
-        String color="bdwdw";
-        Integer size=10;
-
-        String firstName="aadad";
-        String lastName="bfrr";
-        String email="vvva";
-        Integer age=19;
-
-        UserRequest userRequest = UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
-
-        UserResponse userResponse=userCommandService.addUser(userRequest);
-
-        BoatRequest boatRequest=BoatRequest.builder()
-                .model(model)
-                .color(color)
-                .size(size)
-                .userId(userResponse.id())
-                .build();
-
-        BoatResponse boatResponse1 = boatCommandService.addBoat(boatRequest);
-
-        BoatResponse boatResponse = boatCommandService.deleteBoat(boatResponse1.getId());
-        assertEquals(model,boatResponse.getModel());
-
-    }
-    @Test
-    public void testUpdateBoat(){
-        String model="adwd";
-        String color="bdwdw";
-        Integer size=10;
-        String newModel="vvv";
-        String newColor="www";
-
-        String firstName="aadad";
-        String lastName="bfrr";
-        String email="vvva";
-        Integer age=19;
-
-        UserRequest userRequest = UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
-
-        UserResponse userResponse=userCommandService.addUser(userRequest);
-
-        BoatRequest boatRequest=BoatRequest.builder()
-                .model(newModel)
-                .color(newColor)
-                .size(size)
-                .userId(userResponse.id())
-                .build();
-        BoatResponse boatResponse = boatCommandService.addBoat(boatRequest);
-
-        BoatResponse boatResponse1 = boatCommandService.updateBoat(boatResponse.getId(),boatRequest);
-        assertEquals(newModel,boatResponse.getModel());
-        assertEquals(newColor,boatResponse.getColor());
-
-    }
-    @Test
-    public void updatePatchBoat(){
-        String model="adwd";
-        String color="bdwdw";
-        Integer size=10;
-        String newModel="vvv";
-        String newColor="www";
-
-        String firstName="aadad";
-        String lastName="bfrr";
-        String email="vvva";
-        Integer age=19;
-
-        UserRequest userRequest=UserRequest.builder()
-                .firstName(firstName)
-                .lastName(lastName)
-                .email(email)
-                .age(age)
-                .build();
-
-        UserResponse userResponse=userCommandService.addUser(userRequest);
-        BoatRequest boatRequest = BoatRequest.builder()
-                .model(model)
-                .color(color)
-                .size(size)
-                .userId(userResponse.id())
-                .build();
-
-        BoatPatchRequest boatPatchRequest = BoatPatchRequest.builder()
-                .model(newModel)
-                .color(newColor)
-                .build();
-
-        BoatResponse addedBoat = boatCommandService.addBoat(boatRequest);
-        BoatResponse boatResponse = boatCommandService.updatePatchBoat(addedBoat.getId(), boatPatchRequest);
-
-        assertEquals(newModel, boatResponse.getModel());
-        assertEquals(newColor, boatResponse.getColor());
-
-
-
+        assertNotNull(created);
+        assertNotNull(created.getId());
+        assertEquals("model", created.getModel());
+        assertEquals("Red", created.getColor());
+        assertTrue(boatRepository.findById(created.getId()).isPresent());
     }
 
+    @Test
+    void testDeleteBoat() {
+        User user = userrepository.save(User.builder()
+                .firstName("Alex")
+                .lastName("Stan")
+                .email("alex.stan@test.com")
+                .age(25)
+                .password(passwordEncoder.encode("password"))
+                .permissions(PermissionTemplates.permissions)
+                .build());
 
+        Boat saved = boatRepository.save(Boat.builder()
+                .model("model")
+                .color("Black")
+                .size(15)
+                .user(user)
+                .build());
 
+        BoatResponse deleted = boatCommandService.deleteBoat(saved.getId());
 
+        assertNotNull(deleted);
+        assertEquals("model", deleted.getModel());
+        assertFalse(boatRepository.findById(saved.getId()).isPresent());
+    }
 
+    @Test
+    void testUpdateBoat() {
+        User user1 = userrepository.save(User.builder()
+                .firstName("Alex")
+                .lastName("Stan")
+                .email("alex.stan@test.com")
+                .age(22)
+                .password(passwordEncoder.encode("password"))
+                .build());
 
+        User user2 = userrepository.save(User.builder()
+                .firstName("a")
+                .lastName("b")
+                .email("ab@test.com")
+                .age(20)
+                .password(passwordEncoder.encode("password"))
+                .build());
 
+        Boat saved = boatRepository.save(Boat.builder()
+                .model("Old Model")
+                .color("Blue")
+                .size(12)
+                .user(user1)
+                .build());
+
+        BoatRequest req = BoatRequest.builder()
+                .model("New Model")
+                .color("Green")
+                .size(14)
+                .userId(user2.getId())
+                .build();
+
+        BoatResponse updated = boatCommandService.updateBoat(saved.getId(), req);
+
+        assertNotNull(updated);
+        assertEquals("New Model", updated.getModel());
+        assertEquals("Green", updated.getColor());
+    }
+
+    @Test
+    void updatePatchBoat() {
+        User user = userrepository.save(User.builder()
+                .firstName("d")
+                .lastName("i")
+                .email("di@test.com")
+                .age(30)
+                .password(passwordEncoder.encode("password"))
+                .build());
+
+        Boat saved = boatRepository.save(Boat.builder()
+                .model("model")
+                .color("White")
+                .size(8)
+                .user(user)
+                .build());
+
+        BoatPatchRequest req = BoatPatchRequest.builder()
+                .model("model")
+                .color("Yellow")
+                .build();
+
+        BoatResponse patched = boatCommandService.updatePatchBoat(saved.getId(), req);
+
+        assertNotNull(patched);
+        assertEquals("model", patched.getModel());
+        assertEquals("Yellow", patched.getColor());
+    }
 }

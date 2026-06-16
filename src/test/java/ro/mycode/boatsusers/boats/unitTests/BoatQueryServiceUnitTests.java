@@ -10,7 +10,6 @@ import ro.mycode.boats.dtos.BoatResponse;
 import ro.mycode.boats.exceptions.BoatNotFoundException;
 import ro.mycode.boats.model.Boat;
 import ro.mycode.boats.repository.BoatRepository;
-import ro.mycode.boats.service.BoatQueryService;
 import ro.mycode.boats.service.BoatQueryServiceImpl;
 import ro.mycode.boats.mapper.BoatMapper;
 

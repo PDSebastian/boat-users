@@ -1,152 +1,109 @@
-//package ro.mycode.boatsusers.users.integrationTests;
-//
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.test.context.ActiveProfiles;
-//import ro.mycode.users.dtos.UserPatchRequest;
-//import ro.mycode.users.dtos.UserRequest;
-//import ro.mycode.users.dtos.UserResponse;
-//import ro.mycode.users.repository.UserRepository;
-//import ro.mycode.users.service.UserCommandServiceImpl;
-//import java.util.ArrayList;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//
-//@SpringBootTest
-//@ActiveProfiles("tests")
-//public class UserCommandServiceIT {
-//    @Autowired
-//    UserRepository userrepository;
-//    @Autowired
-//    UserCommandServiceImpl userCommandService;
-//
-//    @BeforeEach
-//    public void setup() {
-//        userrepository.deleteAll();
-//    }
+package ro.mycode.boatsusers.users.integrationTests;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
+import ro.mycode.users.dtos.UserPatchRequest;
+import ro.mycode.users.dtos.UserRequest;
+import ro.mycode.users.dtos.UserResponse;
+import ro.mycode.users.model.User;
+import ro.mycode.users.repository.UserRepository;
+import ro.mycode.users.service.UserCommandServiceImpl;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@SpringBootTest
+@ActiveProfiles("tests")
+@Transactional
+public class UserCommandServiceIT {
+
+    @Autowired
+    private UserRepository userrepository;
+
+    @Autowired
+    private UserCommandServiceImpl userCommandService;
+
+    @BeforeEach
+    public void setup() {
+        userrepository.deleteAll();
+    }
+
+    @Test
+    void addUser_persistsAndReturnsDto() {
+        UserRequest req = UserRequest.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("JD@gmail.com")
+                .age(19)
+                .build();
+
+        UserResponse created = userCommandService.addUser(req);
+
+        assertNotNull(created);
+        assertNotNull(created.id());
+        assertEquals("John", created.firstName());
+        assertEquals("JD@gmail.com", created.email());
+        assertTrue(userrepository.findById(created.id()).isPresent());
+    }
+
+    @Test
+    void deleteUser_removesFromDatabase() {
+        User saved = userrepository.save(User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("JD@gmail.com")
+                .age(19)
+                .build());
+
+        userCommandService.deleteUser(saved.getId());
+
+        assertFalse(userrepository.findById(saved.getId()).isPresent());
+    }
+
 //    @Test
-//    public void addUserReturns200(){
-//       String firstName = "John";
-//       String lastName = "Doe";
-//       String email="JD@gmail.com";
-//       Integer age=19;
+//    void updateUser_updatesFieldsAndReturnsDto() {
+//        User saved = userrepository.save(User.builder()
+//                .firstName("Old FirstName")
+//                .lastName("Old LastName")
+//                .email("old@gmail.com")
+//                .age(20)
+//                .build());
 //
-//       UserRequest userRequest = UserRequest.builder()
-//               .firstName(firstName)
-//               .lastName(lastName)
-//               .email(email)
-//               .age(age)
-//               .build();
+//        UserRequest updateReq = UserRequest.builder()
+//                .firstName("New FirstName")
+//                .lastName("New LastName")
+//                .email("new@gmail.com")
+//                .age(25)
+//                .build();
 //
-//        UserResponse userResponse = userCommandService.addUser(userRequest);
+//        UserResponse updated = userCommandService.updateUser( updateReq);
 //
-//       UserResponse expectedResponse=UserResponse.builder()
-//               .id(userResponse.id())
-//               .firstName(firstName)
-//               .lastName(lastName)
-//               .email(email)
-//               .boatsResponses(new ArrayList<>())
-//               .age(age)
-//               .build();
-//
-//       assertEquals(expectedResponse,userResponse);
-//
-//
-//
+//        assertNotNull(updated);
+//        assertEquals("New FirstName", updated.firstName());
+//        assertEquals("new@gmail.com", updated.email());
+//        assertEquals(25, updated.age());
 //    }
-//    @Test
-//    public void deleteUserReturns200(){
-//        String firstName = "John";
-//        String lastName = "Doe";
-//        String email="JD@gmail.com";
-//        Integer age=19;
-//
-//        UserRequest userRequest=UserRequest.builder()
-//                .firstName(firstName)
-//                .lastName(lastName)
-//                .email(email)
-//                .age(age)
-//                .build();
-//
-//     UserResponse userResponse= userCommandService.addUser(userRequest);
-//     UserResponse expectedResponse=UserResponse.builder()
-//             .id(userResponse.id())
-//             .firstName(firstName)
-//             .lastName(lastName)
-//             .email(email)
-//             .age(age)
-//             .boatsResponses(new ArrayList<>())
-//             .build();
-//
-//     userCommandService.deleteUser(userResponse.id());
-//
-//     assertEquals(expectedResponse,userResponse);
-//
-//    }
-//    @Test
-//    public void updateUserReturns200(){
-//        String firstName = "John";
-//        String lastName = "Doe";
-//        String email="JD@gmail.com";
-//        Integer age=19;
-//
-//        UserRequest userRequest = UserRequest.builder()
-//                .firstName(firstName)
-//                .lastName(lastName)
-//                .email(email)
-//                .age(age)
-//                .build();
-//
-//        userCommandService.addUser(userRequest);
-//
-//        UserResponse userResponse = userCommandService.updateUser(userRequest);
-//        UserResponse expectedResponse=UserResponse.builder()
-//                .id(userResponse.id())
-//                .firstName(firstName)
-//                .lastName(lastName)
-//                .email(email)
-//                .age(age)
-//                .boatsResponses(new ArrayList<>())
-//                .build();
-//
-//        assertEquals(expectedResponse,userResponse);
-//
-//
-//
-//
-//
-//    }
-//    @Test
-//    public void updatePatchUserReturns200(){
-//        String firstName = "John";
-//        String lastName = "Doe";
-//        String email="JD@gmail.com";
-//        String newEmail="aa@gmail.com";
-//        Integer age=19;
-//
-//        UserRequest userRequest = UserRequest.builder()
-//                .firstName(firstName)
-//                .lastName(lastName)
-//                .email(email)
-//                .age(age)
-//                .build();
-//
-//
-//      UserResponse userResponse1=  userCommandService.addUser(userRequest);
-//        UserPatchRequest userPatchRequest=UserPatchRequest.builder()
-//                .email(newEmail)
-//                .build();
-//
-//        UserResponse userResponse = userCommandService.updatePatchUser(userResponse1.id(), userPatchRequest);
-//        assertEquals(newEmail, userResponse.email());
-//
-//
-//    }
-//
-//
-//
-//
-//
-//}
+
+    @Test
+    void updatePatchUser_partialUpdateReturnsDto() {
+        User saved = userrepository.save(User.builder()
+                .firstName("D")
+                .lastName("I")
+                .email("DI@test.com")
+                .age(30)
+                .build());
+
+        UserPatchRequest patchReq = UserPatchRequest.builder()
+                .email("aa@gmail.com")
+                .build();
+
+        UserResponse patched = userCommandService.updatePatchUser(saved.getId(), patchReq);
+
+        assertNotNull(patched);
+        assertEquals("aa@gmail.com", patched.email());
+        assertEquals("D", patched.firstName());
+    }
+}

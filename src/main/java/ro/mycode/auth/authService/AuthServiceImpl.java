@@ -21,11 +21,11 @@ import java.util.Set;
 @Component
 public class AuthServiceImpl implements AuthService{
 
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final AuthenticationManager authenticationManager;
-    private final JWTTokenProvider jwtTokenProvider;
-    private final PasswordEncoder passwordEncoder;
+        private final UserRepository userRepository;
+        private final UserMapper userMapper;
+        private final AuthenticationManager authenticationManager;
+        private final JWTTokenProvider jwtTokenProvider;
+        private final PasswordEncoder passwordEncoder;
 
     public  AuthServiceImpl(UserRepository userRepository, UserMapper userMapper, AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
 
@@ -36,24 +36,24 @@ public class AuthServiceImpl implements AuthService{
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public UserResponse login(UserLoginRequest userLoginrequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userLoginrequest.email(), userLoginrequest.password())
-        );
-        User user = userRepository.findByEmail(userLoginrequest.email())
-                .orElseThrow(() -> new UserNotFoundexception());
+        @Override
+        public UserResponse login(UserLoginRequest userLoginrequest) {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userLoginrequest.email(), userLoginrequest.password())
+            );
+            User user = userRepository.findByEmail(userLoginrequest.email())
+                    .orElseThrow(() -> new UserNotFoundexception());
 
-        return new UserResponse(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getAge(),
-                jwtTokenProvider.generateToken( user),
-                List.of()
-        );
-    }
+            return new UserResponse(
+                    user.getId(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.getAge(),
+                    jwtTokenProvider.generateToken( user),
+                    List.of()
+            );
+        }
 
     @Override
     public UserResponse register(UserRequest request) {
