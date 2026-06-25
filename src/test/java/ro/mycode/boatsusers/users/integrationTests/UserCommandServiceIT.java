@@ -12,6 +12,9 @@ import ro.mycode.users.dtos.UserResponse;
 import ro.mycode.users.model.User;
 import ro.mycode.users.repository.UserRepository;
 import ro.mycode.users.service.UserCommandServiceImpl;
+import ro.mycode.users.service.UserQueryService;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -106,4 +109,7 @@ public class UserCommandServiceIT {
         assertEquals("aa@gmail.com", patched.email());
         assertEquals("D", patched.firstName());
     }
+
+
+
 }

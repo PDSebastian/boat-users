@@ -18,7 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("tests")
+@ActiveProfiles("test")
 @Transactional
 public class BoatQueryServiceIT {
 
@@ -29,86 +29,64 @@ public class BoatQueryServiceIT {
     private BoatQueryService boatQueryService;
 
     @Autowired
-    private UserRepository userrepository;
+    private UserRepository userRepository;
 
     @BeforeEach
     public void setup() {
         boatRepository.deleteAll();
     }
 
-    @Test
-    void testGetAllBoats() {
-        User user = userrepository.save(User.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .email("JD@gmail.com")
-                .age(19)
+    private User persistUser(String email) {
+        return userRepository.save(User.builder()
+                .firstName("Pop")
+                .lastName("Rafael")
+                .email(email)
+                .age(25)
                 .build());
+    }
 
-        boatRepository.save(Boat.builder()
-                .model("Yamaha")
-                .color("Blue")
-                .size(10)
-                .user(user)
-                .build());
-
-        boatRepository.save(Boat.builder()
-                .model("Honda")
+    private Boat persistBoat(User user, String model) {
+        return boatRepository.save(Boat.builder()
+                .model(model)
                 .color("Red")
-                .size(100)
+                .size(12)
                 .user(user)
                 .build());
-
-        List<BoatResponse> boats = boatQueryService.getAllBoats();
-
-        assertNotNull(boats);
-        assertEquals(2, boats.size());
     }
 
     @Test
-    void testGetBoatById() {
-        User user = userrepository.save(User.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .email("JD@gmail.com")
-                .age(19)
-                .build());
+    void getAllBoats() {
+        User user = persistUser("a@gmail.com");
+        persistBoat(user, "ModelA");
+        persistBoat(user, "ModelB");
 
-        Boat savedBoat = boatRepository.save(Boat.builder()
-                .model("Yamaha")
-                .color("Blue")
-                .size(10)
-                .user(user)
-                .build());
+        List<BoatResponse> res = boatQueryService.getAllBoats();
 
-        BoatResponse found = boatQueryService.getBoatById(savedBoat.getId());
-
-        assertNotNull(found);
-        assertEquals(savedBoat.getId(), found.getId());
-        assertEquals("Yamaha", found.getModel());
-        assertEquals("Blue", found.getColor());
+        assertNotNull(res);
+        assertEquals(2, res.size());
     }
 
     @Test
-    void testGetBoatByModel() {
-        User user = userrepository.save(User.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .email("JD@gmail.com")
-                .age(19)
-                .build());
+    void getBoatById() {
+        User user = persistUser("b@gmail.com");
+        Boat boat = persistBoat(user, "ModelX");
 
-        Boat savedBoat = boatRepository.save(Boat.builder()
-                .model("Yamaha")
-                .color("Blue")
-                .size(10)
-                .user(user)
-                .build());
+        BoatResponse res = boatQueryService.getBoatById(boat.getId());
 
-        BoatResponse found = boatQueryService.getBoatByModel("Yamaha");
+        assertNotNull(res);
+        assertEquals(boat.getId(), res.getId());
+        assertEquals("ModelX", res.getModel());
+    }
 
-        assertNotNull(found);
-        assertEquals(savedBoat.getId(), found.getId());
-        assertEquals("Yamaha", found.getModel());
+    @Test
+    void getBoatByModel() {
+        User user = persistUser("c@gmail.com");
+        Boat boat = persistBoat(user, "ModelY");
+
+        BoatResponse res = boatQueryService.getBoatByModel("ModelY");
+
+        assertNotNull(res);
+        assertEquals(boat.getId(), res.getId());
+        assertEquals("ModelY", res.getModel());
     }
 }

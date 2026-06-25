@@ -20,7 +20,7 @@ import ro.mycode.users.repository.UserRepository;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("tests")
+@ActiveProfiles("test")
 @Transactional
 public class BoatCommandServiceIT {
 
@@ -31,7 +31,7 @@ public class BoatCommandServiceIT {
     private BoatCommandService boatCommandService;
 
     @Autowired
-    private UserRepository userrepository;
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -41,123 +41,91 @@ public class BoatCommandServiceIT {
         boatRepository.deleteAll();
     }
 
-    @Test
-    void testAddBoat() {
-        User user = userrepository.save(User.builder()
+    private User persistUser(String email) {
+        return userRepository.save(User.builder()
                 .firstName("Pop")
-                .lastName("Sebastian")
-                .email("PDSeb@gmail.com")
-                .age(19)
-                .password(passwordEncoder.encode("password"))
-                .permissions(PermissionTemplates.permissions)
-                .build());
-
-        BoatRequest req = BoatRequest.builder()
-                .model("model")
-                .color("Red")
-                .size(10)
-                .userId(user.getId())
-                .build();
-
-        BoatResponse created = boatCommandService.addBoat(req);
-
-        assertNotNull(created);
-        assertNotNull(created.getId());
-        assertEquals("model", created.getModel());
-        assertEquals("Red", created.getColor());
-        assertTrue(boatRepository.findById(created.getId()).isPresent());
-    }
-
-    @Test
-    void testDeleteBoat() {
-        User user = userrepository.save(User.builder()
-                .firstName("Alex")
-                .lastName("Stan")
-                .email("alex.stan@test.com")
+                .lastName("Rafael")
+                .email(email)
                 .age(25)
                 .password(passwordEncoder.encode("password"))
                 .permissions(PermissionTemplates.permissions)
                 .build());
+    }
 
-        Boat saved = boatRepository.save(Boat.builder()
-                .model("model")
-                .color("Black")
-                .size(15)
+    private Boat persistBoat(User user, String model) {
+        return boatRepository.save(Boat.builder()
+                .model(model)
+                .color("Red")
+                .size(12)
                 .user(user)
                 .build());
-
-        BoatResponse deleted = boatCommandService.deleteBoat(saved.getId());
-
-        assertNotNull(deleted);
-        assertEquals("model", deleted.getModel());
-        assertFalse(boatRepository.findById(saved.getId()).isPresent());
     }
 
     @Test
-    void testUpdateBoat() {
-        User user1 = userrepository.save(User.builder()
-                .firstName("Alex")
-                .lastName("Stan")
-                .email("alex.stan@test.com")
-                .age(22)
-                .password(passwordEncoder.encode("password"))
-                .build());
-
-        User user2 = userrepository.save(User.builder()
-                .firstName("a")
-                .lastName("b")
-                .email("ab@test.com")
-                .age(20)
-                .password(passwordEncoder.encode("password"))
-                .build());
-
-        Boat saved = boatRepository.save(Boat.builder()
-                .model("Old Model")
-                .color("Blue")
-                .size(12)
-                .user(user1)
-                .build());
+    void addBoat() {
+        User user = persistUser("a@gmail.com");
 
         BoatRequest req = BoatRequest.builder()
-                .model("New Model")
+                .model("Model")
+                .color("Red")
+                .size(12)
+                .userId(user.getId())
+                .build();
+
+        BoatResponse res = boatCommandService.addBoat(req);
+
+        assertNotNull(res);
+        assertNotNull(res.getId());
+        assertEquals("Model", res.getModel());
+        assertTrue(boatRepository.findById(res.getId()).isPresent());
+    }
+
+    @Test
+    void deleteBoat() {
+        User user = persistUser("b@gmail.com");
+        Boat boat = persistBoat(user, "ModelX");
+
+        BoatResponse res = boatCommandService.deleteBoat(boat.getId());
+
+        assertNotNull(res);
+        assertEquals("ModelX", res.getModel());
+        assertFalse(boatRepository.findById(boat.getId()).isPresent());
+    }
+
+    @Test
+    void updateBoat() {
+        User user1 = persistUser("c@gmail.com");
+        User user2 = persistUser("d@gmail.com");
+        Boat boat = persistBoat(user1, "ModelOld");
+
+        BoatRequest req = BoatRequest.builder()
+                .model("ModelNew")
                 .color("Green")
                 .size(14)
                 .userId(user2.getId())
                 .build();
 
-        BoatResponse updated = boatCommandService.updateBoat(saved.getId(), req);
+        BoatResponse res = boatCommandService.updateBoat(boat.getId(), req);
 
-        assertNotNull(updated);
-        assertEquals("New Model", updated.getModel());
-        assertEquals("Green", updated.getColor());
+        assertNotNull(res);
+        assertEquals("ModelNew", res.getModel());
+        assertEquals("Green", res.getColor());
     }
 
     @Test
-    void updatePatchBoat() {
-        User user = userrepository.save(User.builder()
-                .firstName("d")
-                .lastName("i")
-                .email("di@test.com")
-                .age(30)
-                .password(passwordEncoder.encode("password"))
-                .build());
-
-        Boat saved = boatRepository.save(Boat.builder()
-                .model("model")
-                .color("White")
-                .size(8)
-                .user(user)
-                .build());
+    void patchBoat() {
+        User user = persistUser("e@gmail.com");
+        Boat boat = persistBoat(user, "ModelY");
 
         BoatPatchRequest req = BoatPatchRequest.builder()
-                .model("model")
-                .color("Yellow")
+                .model("ModelPatch")
+                .color("Green")
                 .build();
 
-        BoatResponse patched = boatCommandService.updatePatchBoat(saved.getId(), req);
+        BoatResponse res = boatCommandService.updatePatchBoat(boat.getId(), req);
 
-        assertNotNull(patched);
-        assertEquals("model", patched.getModel());
-        assertEquals("Yellow", patched.getColor());
+        assertNotNull(res);
+        assertEquals("ModelPatch", res.getModel());
+        assertEquals("Green", res.getColor());
     }
 }

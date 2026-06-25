@@ -66,38 +66,7 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    public void testUpdatePatchReturns200() throws Exception {
-//        Long userId = 1L;
-//        UserPatchRequest userPatchRequest = UserPatchRequest.builder().firstName("John").build();
-//        UserResponse userResponse = UserResponse.builder().id(userId).firstName("John").lastName("Doe").build();
-//
-//        when(userCommandService.updatePatchUser(eq(userId), any(UserPatchRequest.class))).thenReturn(userResponse);
-//
-//        mockMvc.perform(patch("/api/v2/users/patch/{id}", userId)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(userPatchRequest)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.firstName").value("John"));
-//    }
 
-//    @Test
-//    public void testUpdatePutUserReturns200() throws Exception {
-//        Long userId = 1L;
-//        UserRequest userRequest = UserRequest.builder()
-//                .firstName("John Updated").lastName("Doe").email("JD@gmail.com").age(26).build();
-//        UserResponse userResponse = UserResponse.builder()
-//                .id(userId).firstName("John Updated").lastName("Doe").email("JD@gmail.com").age(26).build();
-//
-//        // FIX: Schimbat din updatePatchUser în updateUser (sau cum se numește metoda ta de PUT din service)
-//        when(userCommandService.updateUser(eq(userId), any(UserRequest.class))).thenReturn(userResponse);
-//
-//        mockMvc.perform(put("/api/v2/users/{id}", userId)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(userRequest)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.firstName").value("John Updated"));
-//    }
 
     @Test
     public void testFindByIdReturns200() throws Exception {
@@ -152,4 +121,9 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0].id").value(1L))
                 .andExpect(jsonPath("$[1].id").value(2L));
     }
+
+
+
+
+
 }
